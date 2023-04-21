@@ -1,6 +1,5 @@
 <?php
   require './header.php';
-
   $_SESSION["currentMusicId"] = $_GET["id"];
   $music = $database->getMusicById($_SESSION["currentMusicId"]);
   $isFav = $database->isFavourite($_SESSION["userId"], $_SESSION["currentMusicId"]);

@@ -1,26 +1,21 @@
 <?php
   session_start();
-  
   require './classes/UserDb.php';
   require './classes/Validations.php';
-  
   // Check if user is already logged in or not.
   // If logged in then redirect to welcome page, else load home page.
   if (isset($_SESSION["loggedIn"])) {
     header('Location: ./welcome.php');
   }
-
   // Check if form has been submitted or not. If so then validate user input
   // data.
   if (isset($_POST["login"])) {
     $validation = new Validations();
     $validation->validateEmail($_POST["email"]);
     $validation->validatePassword($_POST["password"]);
-
     // Check if all input form data are valid or not.
     if ($validation->dataValid) {
       $database = new UserDb();
-
       if ($database->checkLogin($_POST["email"], $_POST["password"])) {
         $_SESSION["loggedIn"] = TRUE;
         $_SESSION["userId"] = $database->getUserId($_POST["email"]);
@@ -70,14 +65,14 @@
                 <div class="form-input">
                   <label for="email">Email</label>
                   <input type="text" name="email" id="email" placeholder="Enter your email" value="<?php if (isset($_POST["email"])) { echo $_POST["email"]; } ?>" onblur="validateEmail()">
-                  <span class="error"><?php if (isset($validation->emailErr)) {echo $validation->emailErr;} ?></span>
+                  <span class="error"><?php if (isset($validation->errorMsg["emailErr"])) {echo $validation->errorMsg["emailErr"];} ?></span>
                   <span class="error" id="checkEmail"></span>
                 </div>
 
                 <div class="form-input">
                   <label for="password">Password</label>
                   <input type="password" name="password" id="password" placeholder="Password" onblur="validatePassword()">
-                  <span class="error"><?php if (isset($validation->passwordErr)) {echo $validation->passwordErr;} ?></span>
+                  <span class="error"><?php if (isset($validation->errorMsg["passwordErr"])) {echo $validation->errorMsg["passwordErr"];} ?></span>
                   <span class="error" id="checkPass"></span>
                 </div>
 

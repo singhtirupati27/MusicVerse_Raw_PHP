@@ -13,7 +13,7 @@
               <h3>Name:</h3>
             </div>
             <div class="info-flex-box">
-              <h3><?php echo $userProfile[0]["user_name"]; ?></h3>
+              <h3><?php echo $userProfile["user_name"]; ?></h3>
             </div>
           </div>
           <div class="info-box">
@@ -21,7 +21,7 @@
               <h3>Gender:</h3>
             </div>
             <div class="info-flex-box">
-              <h3><?php echo $userProfile[0]["user_gender"]; ?></h3>
+              <h3><?php echo $userProfile["user_gender"]; ?></h3>
             </div>
           </div>
           <div class="info-box">
@@ -29,7 +29,7 @@
               <h3>Phone:</h3>
             </div>
             <div class="info-flex-box">
-              <h3><?php echo $userProfile[0]["user_phone"]; ?></h3>
+              <h3><?php echo $userProfile["user_phone"]; ?></h3>
             </div>
           </div>
           <div class="info-box">
@@ -37,7 +37,7 @@
               <h3>Email:</h3>
             </div>
             <div class="info-flex-box">
-              <h3><?php echo $userProfile[0]["user_email"]; ?></h3>
+              <h3><?php echo $userProfile["user_email"]; ?></h3>
             </div>
           </div>
           <div class="info-box">
@@ -45,7 +45,7 @@
               <h3>Interests:</h3>
             </div>
             <div class="info-flex-box">
-              <h3><?php echo $userProfile[0]["user_interest"]; ?></h3>
+              <h3><?php echo $userProfile["user_interest"]; ?></h3>
             </div>
           </div>
         </div>
@@ -62,39 +62,7 @@
 <div class="music-container upload-container">
   <div class="page-wrapper music-wrap">
     <div class="music-content">
-      <div class="music-list">
-        <h2>Your uploads</h2>
-        <?php
-          if (!empty($userMusic)) {
-          foreach($userMusic as $value) {
-        ?>
-
-        <div class="music-box">
-          <div class="music-cover-img">
-            <img src="./assets/<?php echo $value['cover_img'] ?>" alt="<?php $value['name'] ?>">
-            <div class="play-btn">
-              <a href="/playmusic.php?id=<?php echo $value['music_id']?>"><img src="./assets/img/play-btn.svg" alt="Play Now"></a>
-            </div>
-          </div>
-          <div class="music-details">
-            <h3><?php echo $value['name'] ?></h3>
-            <h4>Singer: <?php echo $value['singer'] ?></h4>
-            <p>Genre: <?php echo $value['genre'] ?></p>
-          </div>
-        </div>
-
-        <?php
-            }
-          }
-          else {
-        ?>
-
-        <div class="upload">
-          <h3 style="color: white">You have not uploaded any music.</h3>
-        </div>
-        <?php
-          }
-        ?>
+      <div class="music-list" id="uploads">        
       </div>
     </div>
   </div>
@@ -104,40 +72,7 @@
 <div class="music-container favourite-container">
   <div class="page-wrapper music-wrap">
     <div class="music-content">
-      <div class="music-list favourites">
-        <h2>Favourites</h2>
-        <?php
-          if (!empty($userFavourite)) {
-          foreach($userFavourite as $value) {
-        ?>
-
-        <div class="music-box">
-          <div class="music-cover-img">
-            <img src="./assets/<?php echo $value['cover_img'] ?>" alt="<?php $value['name'] ?>">
-            <div class="play-btn">
-              <a href="/playmusic.php?id=<?php echo $value['music_id']?>"><img src="./assets/img/play-btn.svg" alt="Play Now"></a>
-            </div>
-          </div>
-          <div class="music-details">
-            <h3><?php echo $value['name'] ?></h3>
-            <h4>Singer: <?php echo $value['singer'] ?></h4>
-            <p>Genre: <?php echo $value['genre'] ?></p>
-          </div>
-        </div>
-
-        <?php
-            }
-          }
-          else {
-        ?>
-
-        <div class="upload">
-          <h3>You have no favourite music.</h3>
-        </div>
-        
-        <?php
-          }
-        ?>
+      <div class="music-list favourites" id="favourite">
       </div>
     </div>
   </div>

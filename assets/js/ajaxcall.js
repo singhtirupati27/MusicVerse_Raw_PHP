@@ -53,4 +53,31 @@ $(document).ready(function() {
     e.preventDefault();
     favourite();
   });
+
+  /**
+   * Function to load user uploaded music files from database with pagination.
+   * 
+   *  @param int page
+   *    Holds page number to be shown.
+   */
+  function loadUserUpload(page) {
+    $.ajax({
+      url: "./uploads.php",
+      type: "POST",
+      data: {page_no: page},
+      success: function(response) {
+        $("#uploads").html(response);
+      }
+    });
+  }
+
+  loadUserUpload();
+
+  // It will show page number to be loaded.
+  $(document).on("click", "#user-uploads a", function(e) {
+    e.preventDefault();
+    var page_id = $(this).attr("id");
+
+    loadUserUpload(page_id);
+  })
 });

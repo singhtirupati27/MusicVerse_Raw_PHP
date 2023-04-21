@@ -1,12 +1,10 @@
 <?php
   require './header.php'; 
-
   // Check if user has submitted form or not.
   if (isset($_POST["update-profile"])) {
     $validation->validateEmail($_POST["email"]);
     $validation->validateContact($_POST["phone"]);
     $validation->validateInterest($_POST);
-
     // Check if all input field data are valid or not.
     if ($validation->dataValid) {
       // Disabled email verify using api as it is taking longer time to verify.
@@ -14,9 +12,8 @@
 
       // Check for email validation using api.
       if ($email->emailErr == "") {
-        
         // Check if profile has been update or not in database.
-        if ($database->updateProfile($_SESSION["email"], $_POST["email"], $_POST["phone"], $_POST["genre"])) {
+        if ($database->updateProfile($_SESSION["email"], $_POST)) {
           $_SESSION["email"] = $_POST["email"];
           $msg = "Profile updated successfully";
         }
@@ -25,7 +22,7 @@
         }
 
       }
-      else{
+      else {
         $msg = "Invalid email.";
       }
     }
@@ -49,13 +46,13 @@
           <div class="form-input">
             <label for="email">Email</label>
             <input type="text" name="email" id="email" placeholder="Enter your email" onblur="validateEmail()" value="<?php if (isset($userProfile)) { echo $userProfile[0]["user_email"]; } ?>">
-            <span class="error" id="checkEmail"><?php if (isset($validation->emailErr)) { echo $validation->emailErr; } ?></span>
+            <span class="error" id="checkEmail"><?php if (isset($validation->errorMsg["emailErr"])) { echo $validation->errorMsg["emailErr"]; } ?></span>
           </div>
 
           <div class="form-input">
             <label for="phone">Contact Number</label>
             <input type="text" name="phone" id="phone" placeholder="Contact Number" onblur="validatePhone()" value="<?php if (isset($userProfile)) { echo $userProfile[0]["user_phone"]; } ?>">
-            <span class="error" id="checkPhone"><?php if (isset($validation->phoneErr)) { echo $validation->phoneErr; } ?></span>
+            <span class="error" id="checkPhone"><?php if (isset($validation->errorMsg["phoneErr"])) { echo $validation->errorMsg["phoneErr"]; } ?></span>
           </div>
 
           <div class="form-input interest-div">
@@ -70,7 +67,7 @@
             <label for="hiphop">Hip Hop</label>
             <input type="checkbox" name="genre[]" id="others" value="Others" <?php if (isset($_POST["genre"]) && isset($_POST["genre"][4])) { echo "checked"; } ?>>
             <label for="others">Others</label>
-            <span class="error" id="checkInterest"><?php if (isset($validation->interestErr)) { echo $validation->interestErr; } ?></span>
+            <span class="error" id="checkInterest"><?php if (isset($validation->errorMsg["interestErr"])) { echo $validation->errorMsg["interestErr"]; } ?></span>
           </div>
 
           <div class="form-input">

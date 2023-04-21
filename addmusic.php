@@ -2,42 +2,33 @@
   require './header.php';
   require './classes/MusicModel.php';
   $musicFile = new MusicModel();
-
   // Check if form has been submitted or not.
   if (isset($_POST["add-music"])) {
     $musicFile->uploadMusic($_FILES["music-file"]);
     $nameErr = $musicFile->isEmpty($_POST["music-name"]);
     $singerErr = $musicFile->isEmpty($_POST["singer"]);
-
+    $validation->validateInterest($_POST);
     // Check if music cover image is not empty.
-    if (!empty($_FILES["tmp-name"])) {
+    if (empty($_FILES["tmp_name"])) {
       $musicFile->uploadCoverImage($_FILES["cover-image"]);
     }
-    else {
-      $musicFile->imageFileLocation = "";
-    }
-
     // Check whether uploaded music data are valid or not.
-    if ($musicFile->uploadOk) {
+    if ($musicFile->errorMsg["uploadOk"] && $validation->dataValid) {
       // Check if music already exists in database or not, if not then upload
       // music file.
       if (!$database->isMusicExists($_SESSION["userId"], $_POST["music-name"], $_POST["singer"])) {
-        $addUserMusic = $database->addUserMusic($_SESSION["userId"], $_POST["music-name"], $_POST["singer"], $_POST["genre"], 
-          $musicFile->musicFileLocation, $musicFile->imageFileLocation);
-
+        $addUserMusic = $database->addUserMusic($_SESSION["userId"], $_POST,
+          $musicFile->musicData["musicFileLocation"], $musicFile->musicData["imageFileLocation"]);
         $uploadId = $database->fetchMusicByName($_POST["music-name"], $_POST["singer"]);
-        $musicAdd = $database->addMusic($_POST["music-name"], $_POST["singer"], $_POST["genre"], 
-          $musicFile->musicFileLocation, $musicFile->imageFileLocation, $uploadId);
-
+        $musicAdd = $database->addMusic($_POST, $musicFile->musicData["musicFileLocation"],
+          $musicFile->musicData["imageFileLocation"], $uploadId);
         // Check for whether music has been uploaded or not.
         if ($addUserMusic && $musicAdd) {
-
           // Check if uploaded file has been moved to local directory.
-          if (move_uploaded_file($_FILES["music-file"]["tmp_name"], $musicFile->musicFileLocation)) {
-
+          if (move_uploaded_file($_FILES["music-file"]["tmp_name"], $musicFile->musicData["musicFileLocation"])) {
             // Check if cover image file is not empty, then upload file to local directory.
-            if(!empty($_FILES["cover-image"])) {
-              move_uploaded_file($_FILES["cover-image"]["tmp_name"], $musicFile->imageFileLocation);
+            if(!empty($_FILES["tmp_name"])) {
+              move_uploaded_file($_FILES["cover-image"]["tmp_name"], $musicFile->musicData["imageFileLocation"]);
             }
             $msg = "Music uploaded successfully!";
           }
@@ -67,13 +58,13 @@
             <div class="form-input" id="music">
               <label for="music-file">Music File</label>
               <input type="file" name="music-file" id="music-file" class="music-info">
-              <span class="error" id="checkMusic"><?php if(isset($musicFile->uploadErr)) { echo $musicFile->uploadErr; } ?></span>
+              <span class="error" id="checkMusic"><?php if(isset($musicFile->errorMsg["uploadErr"])) { echo $musicFile->errorMsg["uploadErr"]; } ?></span>
             </div>
   
             <div class="form-input">
               <label for="cover-image">Cover Image</label>
               <input type="file" name="cover-image" id="cover-image" class="music-info">
-              <span class="error" id="checkCover"><?php if(isset($musicFile->uploadImgErr)) { echo $musicFile->uploadImgErr; } ?></span>
+              <span class="error" id="checkCover"><?php if(isset($musicFile->errorMsg["uploadImgErr"])) { echo $musicFile->errorMsg["uploadImgErr"]; } ?></span>
             </div>
           </div>
 
@@ -101,7 +92,7 @@
             <label for="hiphop">Hip Hop</label>
             <input type="checkbox" name="genre[]" id="others" value="Others">
             <label for="others">Others</label>
-            <span class="error" id="checkInterest"><?php if (isset($validation->interestErr)) { echo $validation->interestErr; } ?></span>
+            <span class="error" id="checkInterest"><?php if (isset($validation->errorMsg["interestErr"])) { echo $validation->errorMsg["interestErr"]; } ?></span>
           </div>
 
           <div class="form-input">

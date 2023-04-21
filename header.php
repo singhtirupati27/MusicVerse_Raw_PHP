@@ -3,20 +3,17 @@
   require './classes/UserDb.php';
   require './classes/Validations.php';
   require './classes/Email.php';
-
   // Check if user is already logged in or not.
   // If logged in then redirect to welcome page, else load home page.
   if (!isset($_SESSION["loggedIn"])) {
     header('Location: ./index.php');
   }
-
   $database = new UserDb();
   $validation = new Validations();
   $email = new Email();
   $userMusic = $database->getUserMusic($_SESSION["userId"]);
   $userProfile = $database->fetchUserProfile($_SESSION["email"]);
   $userFavourite = $database->getFavourite($_SESSION["userId"]);
-
 ?>
 
 <!DOCTYPE html>

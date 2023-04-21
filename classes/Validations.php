@@ -5,48 +5,19 @@
    * their error messages.
    */
   class Validations {
-
     /**
-     *  @var string $nameErr
-     *    Holds error message while checking name.
+     *  @var array $errorMsg
+     *    Stores error messages of input fields after validating.
      */
-    public string $nameErr = "";
-
-    /**
-     *  @var string $genderErr
-     *    Holds gender error message while checking gender field data.
-     */
-    public string $genderErr = "";
-
-    /**
-     *  @var string $interestErr
-     *    Holds interest error message while checking interest field data.
-     */
-    public string $interestErr = "";
-
-    /**
-     *  @var string $phoneErr
-     *    Holds error message while checking phone number.
-     */
-    public string $phoneErr = "";
-
-    /**
-     *  @var string $emailErr
-     *    Holds error message while checking email.
-     */
-    public string $emailErr = "";
-
-    /**
-     *  @var string $passwordErr
-     *    Holds error message while checking password pattern.
-     */
-    public string $passwordErr = "";
-
-    /**
-     *  @var string $cnfPasswordErr
-     *    Holds error message while checking confirm password pattern.
-     */
-    public string $cnfPasswordErr = "";
+    public array $errorMsg = [
+      "nameErr" => "",
+      "genderErr" => "",
+      "interestErr" => "",
+      "phoneErr" => "",
+      "emailErr" => "",
+      "passwordErr" => "",
+      "cnfPasswordErr" => ""
+    ];
 
     /**
      *  @var int $dataValid
@@ -64,15 +35,15 @@
      *    True if format valid, false if not.
      */
     public function validateName(string $name) {
-
       // Check if input field is empty.
-      if(empty($name)) {
-        $this->nameErr = "Name field cannot be empty.";
+      if (empty($name)) {
+        $this->errorMsg["nameErr"] = "Name field cannot be empty.";
         $this->dataValid = 0;
         return FALSE;
       }
-      else if(!preg_match("/^[a-zA-Z-' ]+$/", $name)) {
-        $this->nameErr = "Only characters are allowed!";
+      // Check if pattern matched or not.
+      elseif (!preg_match("/^[a-zA-Z-' ]+$/", $name)) {
+        $this->errorMsg["nameErr"] = "Only characters are allowed!";
         $this->dataValid = 0;
         return FALSE;
       }
@@ -88,8 +59,9 @@
      *    Contains user all data.
      */
     public function validateGender(array $user_data) {
-      if(!isset($user_data["gender"])) {
-        $this->genderErr = "Gender is required";
+      // Check if data has some values or not.
+      if (!isset($user_data["gender"])) {
+        $this->errorMsg["genderErr"] = "Gender is required";
         $this->dataValid = 0;
       }
     }
@@ -101,8 +73,9 @@
      *    Hold user all data.
      */
     public function validateInterest(array $user_data) {
-      if(!isset($user_data["genre"])) {
-        $this->interestErr = "Please select at least 1 genre";
+      // Check if data has some values or not.
+      if (!isset($user_data["genre"])) {
+        $this->errorMsg["interestErr"] = "Please select at least 1 genre";
         $this->dataValid = 0;
       }
     }
@@ -117,13 +90,15 @@
      *   Return true if format valid, false if not.
      */
     public function validateContact(string $phone) {
-      if(empty($phone)) {
-        $this->phoneErr = "Phone number is required";
+      // Check if phone number is empty.
+      if (empty($phone)) {
+        $this->errorMsg["phoneErr"] = "Phone number is required";
         $this->dataValid = 0;
         return FALSE;
       }
-      else if(!preg_match("/^(\+91)[0-9]{10}$/", $phone)) {
-        $this->phoneErr = "Invalid phone number!";
+      // Check if phone number pattern matched or not.
+      elseif (!preg_match("/^(\+91)[0-9]{10}$/", $phone)) {
+        $this->errorMsg["phoneErr"] = "Invalid phone number!";
         $this->dataValid = 0;
         return FALSE;
       }
@@ -139,16 +114,15 @@
      *    Contains email address.
      */
     public function validateEmail(string $email) {
-      if(empty($email)) {
-        $this->emailErr = "Email is required";
+      // Check if email is empty or not.
+      if (empty($email)) {
+        $this->errorMsg["emailErr"] = "Email is required";
         $this->dataValid = 0;
       }
-      if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $this->emailErr = "Invalid email format!";
+      // Check for email format validation.
+      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $this->errorMsg["emailErr"] = "Invalid email format!";
         $this->dataValid = 0;
-      }
-      else {
-        $this->emailErr = "";
       }
     }
 
@@ -160,21 +134,23 @@
      */
     public function validatePassword(string $password) {
       $pattern = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/";
-
-      if(empty($password)) {
-        $this->passwordErr = "Password cannot be empty.";
+      // Check if password is not empty.
+      if (empty($password)) {
+        $this->errorMsg["passwordErr"] = "Password cannot be empty.";
         $this->dataValid = 0;
       }
-      else if (!strlen($password) >= 8 && strlen($password) <= 15) {
-        $this->passwordErr = "Password length must be greater than 8 characters.";
+      // Check for password length limit.
+      elseif (!strlen($password) >= 8 && strlen($password) <= 15) {
+        $this->errorMsg["passwordErr"] = "Password length must be greater than 8 characters.";
         $this->dataValid = 0;
       }
-      else if(!preg_match($pattern, $password)) {
-        $this->passwordErr = "Password must contain at least one lower, one upper, one numeric and one special character";
+      // Check if password matched with pattern or not.
+      elseif (!preg_match($pattern, $password)) {
+        $this->errorMsg["passwordErr"] = "Password must contain at least one lower, one upper, one numeric and one special character";
         $this->dataValid = 0;
       }
       else {
-        $this->passwordErr = "";
+        $this->errorMsg["passwordErr"] = "";
       }
     }
 
@@ -191,13 +167,15 @@
      *    True if password match, false if not.
      */
     public function matchPassword(string $password, string $cnfpassword) {
-      if(empty($cnfpassword)) {
-        $this->cnfPasswordErr = "Confirm password cannot be empty";
+      // Check if confirm password is empty or not.
+      if (empty($cnfpassword)) {
+        $this->errorMsg["cnfPasswordErr"] = "Confirm password cannot be empty";
         $this->dataValid = 0;
         return FALSE;
       }
-      else if($password != $cnfpassword) {
-        $this->cnfPasswordErr = "Password do not match.";
+      // Check if password matched with confirm password or not.
+      elseif ($password != $cnfpassword) {
+        $this->errorMsg["cnfPasswordErr"] = "Password do not match.";
         $this->dataValid = 0;
         return FALSE;
       }
@@ -223,13 +201,11 @@
       $this->validateEmail($user_data["email"]);
       $this->validatePassword($user_data["password"]);
       $this->matchPassword($user_data["password"], $user_data["cnfPassword"]);
-
-      if($this->dataValid) {
+      // Check if all input data fields are valid or not after validation.
+      if ($this->dataValid) {
         return TRUE;
       }
-      else {
-        return FALSE;
-      }
+      return FALSE;
     }
 
   }

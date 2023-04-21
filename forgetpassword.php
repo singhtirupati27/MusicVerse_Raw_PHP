@@ -1,28 +1,22 @@
 <?php
   session_start();
-
   require './classes/Validations.php';
   require './classes/UserDb.php';
   require './classes/Email.php';
-
   // Check if forgetpassword form has been submitted or not.
   if (isset($_POST["forgetPassword"])) {
     $validation = new Validations();
     $validation->validateEmail($_POST["email"]);
-
     // Check if provided email is valid or not.
     if ($validation->dataValid) {
       $database = new UserDb();
-
       // Check if user already exists or not. If exists then send password rest
       // link to email id.
       if ($database->checkUserNameExists($_POST["email"])) {
         $email = new Email();
         $email->verifyEmail($_POST["email"]);
-
         // Check if entered email is active or not.
         if ($email->emailErr == "") {
-          
           // Check if email has been sent or not.
           if ($email->sendEmail($_POST["email"])) {
             $msg = "E-mail has been sent!";
@@ -78,7 +72,7 @@
                 <div class="form-input">
                   <label for="email">Email</label>
                   <input type="text" name="email" id="email" placeholder="Enter your email" onblur="validateEmail()">
-                  <span class="error" id="checkEmail"><?php if (isset($validation->emailErr)) {echo $validation->emailErr;} ?></span>
+                  <span class="error" id="checkEmail"><?php if (isset($validation->errorMsg["emailErr"])) {echo $validation->errorMsg["emailErr"];} ?></span>
                 </div>
     
                 <div class="form-input">

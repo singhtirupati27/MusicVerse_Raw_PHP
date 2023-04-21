@@ -1,19 +1,17 @@
 <?php
   require './classes/Validations.php';
   require './classes/UserDb.php';
-
   // Check if form has been submitted or not. If so then validate user input
   // data.
   if (isset($_POST["register"])) {
     $validation = new Validations();
-
     // Check if all input data fields are valid. If valid then insert data into
     // database.
     if ($validation->checkRegistration($_POST)) {
       $database = new UserDb();
-
       // If user not exists then register user data to database.
-      if (!$database->checkUserNameExists($_POST["email"]) && $database->checkUserContactExists($_POST["phone"])) {
+      if (!$database->checkUserNameExists($_POST["email"]) && !$database->checkUserContactExists($_POST["phone"])) {
+        // Check whether new user data has been insterted in database or not.
         if ($database->registerUser($_POST)) {
           $msg = "Your account has been created successfully!";
           header('Location: ./login.php');
@@ -64,7 +62,7 @@
                   <div class="form-input">
                     <label for="fname">Name</label>
                     <input type="text" name="name" id="name" placeholder="Full Name" onblur="validateName()" value="<?php if (isset($_POST["name"])) { echo $_POST["name"]; } ?>">
-                    <span class="error" id="checkName"><?php if (isset($validation->nameErr)) { echo $validation->nameErr; } ?></span>
+                    <span class="error" id="checkName"><?php if (isset($validation->errorMsg["nameErr"])) { echo $validation->errorMsg["nameErr"]; } ?></span>
                   </div>
   
                   <div class="form-input gender-div">
@@ -77,7 +75,7 @@
                     <label for="other">Other</label>
                     <input type="radio" id="pref" name="gender" value="Prefer not to say" <?php if (isset($_POST["gender"]) && $_POST["gender"]=="Prefer not to say") { echo "checked"; }?>>
                     <label for="prefer not to say">Prefer not to say</label>
-                    <span class="error" id="checkGender"><?php if (isset($validation->genderErr)) { echo $validation->genderErr; } ?></span>
+                    <span class="error" id="checkGender"><?php if (isset($validation->errorMsg["genderErr"])) { echo $validation->errorMsg["genderErr"]; } ?></span>
                   </div>
   
                   <div class="form-input interest-div">
@@ -92,31 +90,31 @@
                     <label for="hiphop">Hip Hop</label>
                     <input type="checkbox" name="genre[]" id="others" value="Others" <?php if (isset($_POST["genre"]) && isset($_POST["genre"][4])) { echo "checked"; } ?>>
                     <label for="others">Others</label>
-                    <span class="error" id="checkInterest"><?php if (isset($validation->interestErr)) { echo $validation->interestErr; } ?></span>
+                    <span class="error" id="checkInterest"><?php if (isset($validation->errorMsg["interestErr"])) { echo $validation->errorMsg["interestErr"]; } ?></span>
                   </div>
   
                   <div class="form-input">
                     <label for="phone">Contact Number</label>
                     <input type="text" name="phone" id="phone" placeholder="Contact Number" onblur="validatePhone()" value="<?php if (isset($_POST["phone"])) { echo $_POST["phone"]; } ?>">
-                    <span class="error" id="checkPhone"><?php if (isset($validation->phoneErr)) { echo $validation->phoneErr; } ?></span>
+                    <span class="error" id="checkPhone"><?php if (isset($validation->errorMsg["phoneErr"])) { echo $validation->errorMsg["phoneErr"]; } ?></span>
                   </div>
   
                   <div class="form-input">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email" placeholder="Enter your email" onblur="validateEmail()" value="<?php if (isset($_POST["email"])) { echo $_POST["email"]; } ?>">
-                    <span class="error" id="checkEmail"><?php if (isset($validation->emailErr)) { echo $validation->emailErr; } ?></span>
+                    <span class="error" id="checkEmail"><?php if (isset($validation->errorMsg["emailErr"])) { echo $validation->errorMsg["emailErr"]; } ?></span>
                   </div>
   
                   <div class="form-input">
                     <label for="password">Password</label>
                     <input type="password" name="password" id="password" placeholder="Password" onblur="validatePassword()">
-                    <span class="error" id="checkPass"><?php if (isset($validation->passwordErr)) { echo $validation->passwordErr; } ?></span>
+                    <span class="error" id="checkPass"><?php if (isset($validation->errorMsg["passwordErr"])) { echo $validation->errorMsg["passwordErr"]; } ?></span>
                   </div>
   
                   <div class="form-input">
                     <label for="password">Confirm Password</label>
                     <input type="password" name="cnfPassword" id="cnfPassword" placeholder="Password" onblur="matchPassword()">
-                    <span class="error" id="checkCnfPass"><?php if (isset($validation->cnfPasswordErr)) { echo $validation->cnfPasswordErr; } ?></span>
+                    <span class="error" id="checkCnfPass"><?php if (isset($validation->errorMsg["cnfPasswordErr"])) { echo $validation->errorMsg["cnfPasswordErr"]; } ?></span>
                   </div>
   
                   <div class="form-input">

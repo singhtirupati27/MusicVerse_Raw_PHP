@@ -1,6 +1,5 @@
 <?php
   session_start();
-  
   // Check if user is already logged in or not.
   // If logged in then redirect to welcome page, else load home page.
   if (isset($_SESSION["loggedIn"])) {

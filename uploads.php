@@ -2,19 +2,24 @@
   session_start();
   require './classes/UserDb.php';
   $database = new UserDb();
-  $music = $database->musicList();
-  $num_of_rows = $database->calculateRows("music", 0);
+  $music = $database->getUserMusic($_SESSION["userId"]);
+  $num_of_rows = $database->calculateRows("music", $_SESSION["userId"]);
   $_SESSION["musicList"] = $music;
   $page = "";
   // Check if page number has been set or not.
   if (isset($_POST["page_no"])) {
     $page = $_POST["page_no"];
   }
-  // If not set then assign page number to 1.
+  // If page number has not been set then set it to 1.
   else {
     $page = 1;
   }
   $total_pages = ceil($num_of_rows/8);
+?>
+
+<h2>Your uploads</h2>
+
+<?php
   // Check whether music array is empty or not.
   if (!empty($music)) {
     foreach($music as $value) {
@@ -40,15 +45,15 @@
   else {
 ?>
 
-<div class="music-box">
-  <h2>No music found</h2>
+<div class="upload">
+  <h3>You have not uploaded any music.</h3>
 </div>
 
 <?php
   }
 ?>
 
-<div class="page-num" id="pagination">
+<div class="page-num" id="user-uploads">
   <?php
     // To show total page number.
     for ($i = 1; $i <= $total_pages; $i++) {
