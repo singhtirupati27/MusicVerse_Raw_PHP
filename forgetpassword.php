@@ -26,6 +26,9 @@
             $msg = "E-mail could not be sent!";
           }
         }
+        else {
+          $msg = $email->emailErr;
+        }
       }
       else {
         $msg = "User deos not exists!";

@@ -1,6 +1,7 @@
 <?php
   require './classes/Validations.php';
   require './classes/UserDb.php';
+  require './classes/Email.php';
   // Check if form has been submitted or not. If so then validate user input
   // data.
   if (isset($_POST["register"])) {
@@ -8,17 +9,24 @@
     // Check if all input data fields are valid. If valid then insert data into
     // database.
     if ($validation->checkRegistration($_POST)) {
-      $database = new UserDb();
-      // If user not exists then register user data to database.
-      if (!$database->checkUserNameExists($_POST["email"]) && !$database->checkUserContactExists($_POST["phone"])) {
-        // Check whether new user data has been insterted in database or not.
-        if ($database->registerUser($_POST)) {
-          $msg = "Your account has been created successfully!";
-          header('Location: ./login.php');
+      $email = new Email();
+      $email->verifyEmail($_POST["email"]);
+      if($email->emailErr == "") {
+        $database = new UserDb();
+        // If user not exists then register user data to database.
+        if (!$database->checkUserNameExists($_POST["email"]) && !$database->checkUserContactExists($_POST["phone"])) {
+          // Check whether new user data has been insterted in database or not.
+          if ($database->registerUser($_POST)) {
+            $msg = "Your account has been created successfully!";
+            header('Location: ./login.php');
+          }
+        }
+        else {
+          $msg = "User already exists.";
         }
       }
       else {
-        $msg = "User already exists.";
+        $msg = $email->emailErr;
       }
     }
   }

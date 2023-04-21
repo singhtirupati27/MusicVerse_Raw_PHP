@@ -71,13 +71,13 @@
           <div class="form-input">
             <label for="music-name">Music Name</label>
             <input type="text" name="music-name" id="music-name" placeholder="Enter music name" required>
-            <span class="error" id="checkMusicName"><?php if(isset($GLOBALS["mnameErr"])) { echo $GLOBALS["mnameErr"]; } ?></span>
+            <span class="error" id="checkMusicName"><?php if(isset($nameErr)) { echo $nameErr; } ?></span>
           </div>
 
           <div class="form-input">
             <label for="singer">Singer(s)</label>
             <input type="text" name="singer" id="singer" placeholder="Singer(s)" required>
-            <span class="error" id="checkSinger"><?php if(isset($GLOBALS["singerErr"])) { echo $GLOBALS["singerErr"]; } ?></span>
+            <span class="error" id="checkSinger"><?php if(isset($singerErr)) { echo $singerErr; } ?></span>
           </div>
 
           <div class="form-input interest-div">

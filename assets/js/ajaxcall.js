@@ -33,7 +33,7 @@ $(document).ready(function() {
    */
   function favourite() {
     $.ajax({
-      url: "./favourites.php",
+      url: "./addfavourite.php",
       type: "POST",
       success: function(data) {
         var favbutton;
@@ -79,5 +79,32 @@ $(document).ready(function() {
     var page_id = $(this).attr("id");
 
     loadUserUpload(page_id);
+  });
+
+  /**
+   * Function to load user favourites songs.
+   * 
+   *  @param int page
+   *    Holds page number to be shown. 
+   */
+  function loadUserFavourite(page) {
+    $.ajax({
+      url: "favourites.php",
+      type: "POST",
+      data: {page_no: page},
+      success: function(response) {
+        $("#favourite").html(response);
+      }
+    });
+  }
+
+  loadUserFavourite();
+
+  // It will page  number to be loaded.
+  $(document).on("click", "#user-fav a", function(e) {
+    e.preventDefault();
+    var page_id = $(this).attr("id");
+
+    loadUserFavourite(page_id);
   })
 });

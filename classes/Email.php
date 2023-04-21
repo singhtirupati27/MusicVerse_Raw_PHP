@@ -7,6 +7,8 @@
   use PHPMailer\PHPMailer\Exception;
   use GuzzleHttp\Client;
   use Dotenv\Dotenv;
+  use GuzzleHttp\Exception\GuzzleException;
+
   $dotenv = Dotenv::createImmutable("./");
   $dotenv->load();
 
@@ -31,17 +33,28 @@
      *    In this function email is passed as parameter.
      */
     public function verifyEmail(string $email) {
-      // Creating Credentials class object to access credentials.
-      $client = new Client();
-      $response = $client->request('GET', "https://api.apilayer.com/email_verification/check?email=$email", 
-        ['headers' => ['Content-Type' => 'text/plain', 'apikey'=> $_ENV['APIKEY']]]
-      );
-      $responseReceived = $response->getBody();
-      $validationResult = json_decode($responseReceived, true);
-
-      // Check whether email format and smtp_check is valid or not.
-      if (!$validationResult["format_valid"] && !$validationResult["smtp_check"]) {
-        $this->emailErr = "Invalid e-mail!";
+      try {
+        // Creating Credentials class object to access credentials.
+        $client = new Client();
+        $response = $client->request('GET', "https://api.apilayer.com/email_verification/check?email=$email", 
+          ['headers' => ['Content-Type' => 'text/plain', 'apikey'=> $_ENV['APIKEY']]]
+        );
+        $responseReceived = $response->getBody();
+        $validationResult = json_decode($responseReceived, true);
+  
+        // Check if response data is not empty.
+        if(!empty($validationResult["format_valid"]) && !empty($validationResult["smtp_check"])) {
+          // Check whether email format and smtp_check is valid or not.
+          if (!$validationResult["format_valid"] && !$validationResult["smtp_check"]) {
+            $this->emailErr = "Invalid e-mail!";
+          }
+        }
+        else {
+          $this->emailErr = "Sorry, your request can't be processed at this time.";
+        }
+      }
+      catch (GuzzleException) {
+        $this->emailErr = "We're facing some issues, try again later.";
       }
     }
 

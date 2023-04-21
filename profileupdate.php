@@ -7,9 +7,7 @@
     $validation->validateInterest($_POST);
     // Check if all input field data are valid or not.
     if ($validation->dataValid) {
-      // Disabled email verify using api as it is taking longer time to verify.
-      // $email->verifyEmail($_POST["email"]);
-
+      $email->verifyEmail($_POST["email"]);
       // Check for email validation using api.
       if ($email->emailErr == "") {
         // Check if profile has been update or not in database.
@@ -23,7 +21,7 @@
 
       }
       else {
-        $msg = "Invalid email.";
+        $msg = $email->emailErr;
       }
     }
   }
@@ -45,13 +43,13 @@
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
           <div class="form-input">
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" placeholder="Enter your email" onblur="validateEmail()" value="<?php if (isset($userProfile)) { echo $userProfile[0]["user_email"]; } ?>">
+            <input type="text" name="email" id="email" placeholder="Enter your email" onblur="validateEmail()" value="<?php if (isset($userProfile)) { echo $userProfile["user_email"]; } ?>">
             <span class="error" id="checkEmail"><?php if (isset($validation->errorMsg["emailErr"])) { echo $validation->errorMsg["emailErr"]; } ?></span>
           </div>
 
           <div class="form-input">
             <label for="phone">Contact Number</label>
-            <input type="text" name="phone" id="phone" placeholder="Contact Number" onblur="validatePhone()" value="<?php if (isset($userProfile)) { echo $userProfile[0]["user_phone"]; } ?>">
+            <input type="text" name="phone" id="phone" placeholder="Contact Number" onblur="validatePhone()" value="<?php if (isset($userProfile)) { echo $userProfile["user_phone"]; } ?>">
             <span class="error" id="checkPhone"><?php if (isset($validation->errorMsg["phoneErr"])) { echo $validation->errorMsg["phoneErr"]; } ?></span>
           </div>
 
